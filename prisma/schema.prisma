@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Language {
+  fr
+  en
+}
+
+enum ProjectType {
+  SITE_WEB
+  APP_WEB
+  APP_MOBILE
+  SYSTEME_GESTION
+  ECOMMERCE
+  MARKETPLACE
+  ERP_CRM
+  FINTECH
+  IA_AUTOMATISATION
+  AUTRE
+}
+
+enum SubmissionStatus {
+  NOUVEAU
+  EN_COURS
+  BRIEF_ENVOYE
+  EN_ATTENTE_CLIENT
+  PROPOSITION_ENVOYEE
+  CONFIRME
+  NON_QUALIFIE
+  ARCHIVE
+}
+
+enum DocumentType {
+  BRIEF
+  DRAFT_CDC
+}
+
+enum GenerationStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Prospect {
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt   DateTime     @default(now()) @map("created_at")
+  firstName   String       @map("first_name") @db.VarChar(100)
+  lastName    String       @map("last_name") @db.VarChar(100)
+  email       String       @unique @db.VarChar(255)
+  phone       String?      @db.VarChar(50)
+  company     String?      @db.VarChar(200)
+  country     String       @db.VarChar(100)
+  sector      String       @db.VarChar(100)
+  language    Language     @default(fr)
+  submissions Submission[]
+
+  @@map("prospects")
+}
+
+model Submission {
+  id                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+  prospect          Prospect         @relation(fields: [prospectId], references: [id])
+  prospectId        String           @map("prospect_id") @db.Uuid
+  projectType       ProjectType      @map("project_type")
+  description       String           @db.Text
+  targetUsers       Json             @map("target_users")
+  features          Json
+  constraints       Json
+  rawResponses      Json             @map("raw_responses")
+  status            SubmissionStatus @default(NOUVEAU)
+  completenessScore Int?             @map("completeness_score")
+  honeypotFlagged   Boolean          @default(false) @map("honeypot_flagged")
+  ipAddress         String?          @map("ip_address") @db.VarChar(45)
+  documents         GeneratedDocument[]
+  statusHistory     StatusHistory[]
+  notes             InternalNote[]
+
+  @@index([status])
+  @@index([prospectId])
+  @@index([createdAt(sort: Desc)])
+  @@index([projectType])
+  @@map("submissions")
+}
+
+model GeneratedDocument {
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt        DateTime         @default(now()) @map("created_at")
+  submission       Submission       @relation(fields: [submissionId], references: [id])
+  submissionId     String           @map("submission_id") @db.Uuid
+  type             DocumentType
+  content          String           @db.Text
+  language         Language
+  generationStatus GenerationStatus @default(PENDING) @map("generation_status")
+  errorMessage     String?          @map("error_message") @db.Text
+  version          Int              @default(1)
+
+  @@index([submissionId])
+  @@index([generationStatus])
+  @@map("generated_documents")
+}
+
+model StatusHistory {
+  id           String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt    DateTime         @default(now()) @map("created_at")
+  submission   Submission       @relation(fields: [submissionId], references: [id])
+  submissionId String           @map("submission_id") @db.Uuid
+  oldStatus    SubmissionStatus? @map("old_status")
+  newStatus    SubmissionStatus  @map("new_status")
+  changedBy    String           @default("admin") @map("changed_by") @db.VarChar(100)
+
+  @@index([submissionId])
+  @@map("status_history")
+}
+
+model InternalNote {
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt    DateTime   @default(now()) @map("created_at")
+  submission   Submission @relation(fields: [submissionId], references: [id])
+  submissionId String     @map("submission_id") @db.Uuid
+  content      String     @db.Text
+
+  @@index([submissionId])
+  @@map("internal_notes")
+}
+
+model Project {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  slug          String   @unique @db.VarChar(200)
+  titleFr       String   @map("title_fr") @db.VarChar(200)
+  titleEn       String   @map("title_en") @db.VarChar(200)
+  category      String   @db.VarChar(100)
+  descriptionFr String   @map("description_fr") @db.Text
+  descriptionEn String   @map("description_en") @db.Text
+  problemFr     String   @map("problem_fr") @db.Text
+  problemEn     String   @map("problem_en") @db.Text
+  resultFr      String   @map("result_fr") @db.Text
+  resultEn      String   @map("result_en") @db.Text
+  technologies  String[]
+  coverImageUrl String?  @map("cover_image_url") @db.VarChar(500)
+  isPublished   Boolean  @default(false) @map("is_published")
+  displayOrder  Int      @default(0) @map("display_order")
+
+  @@index([isPublished])
+  @@index([category])
+  @@map("projects")
+}
+
+model AdminUser {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt      DateTime  @default(now()) @map("created_at")
+  email          String    @unique @db.VarChar(255)
+  passwordHash   String    @map("password_hash") @db.VarChar(255)
+  failedAttempts Int       @default(0) @map("failed_attempts")
+  lockedUntil    DateTime? @map("locked_until")
+  lastLoginAt    DateTime? @map("last_login_at")
+
+  @@map("admin_users")
+}

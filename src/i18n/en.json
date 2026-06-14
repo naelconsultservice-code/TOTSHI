@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "home": "Home",
+    "services": "Services",
+    "portfolio": "Portfolio",
+    "about": "About",
+    "startProject": "Start my project"
+  },
+  "hero": {
+    "badge": "Software development agency",
+    "title": "We transform your vision into a",
+    "titleHighlight": "digital solution",
+    "subtitle": "TOTSHI designs and delivers custom digital solutions — Web, Mobile, AI, FinTech, Enterprise. From brief to production.",
+    "cta": "Start my project",
+    "ctaSecondary": "View our work"
+  },
+  "services": {
+    "title": "Our Areas of Expertise",
+    "subtitle": "Solutions tailored to every business need",
+    "items": {
+      "web": { "title": "Web Development", "desc": "Websites, web applications, SaaS platforms" },
+      "mobile": { "title": "Mobile Applications", "desc": "iOS, Android, Flutter cross-platform" },
+      "enterprise": { "title": "Enterprise Systems", "desc": "ERP, CRM, business management systems" },
+      "fintech": { "title": "FinTech", "desc": "Payments, Mobile Money, financial solutions" },
+      "ai": { "title": "AI & Automation", "desc": "AI integration, process automation" },
+      "security": { "title": "Cybersecurity", "desc": "Audit, protection, compliance" }
+    }
+  },
+  "process": {
+    "title": "How it works",
+    "subtitle": "A structured process for predictable results",
+    "steps": {
+      "1": { "title": "You describe your project", "desc": "Our guided system captures your needs in 7 simple steps" },
+      "2": { "title": "AI analyzes and structures", "desc": "A specification is automatically generated in under 2 minutes" },
+      "3": { "title": "We get back to you", "desc": "Our team sends you a detailed proposal within 24 hours" }
+    }
+  },
+  "cta": {
+    "title": "Ready to start your project?",
+    "subtitle": "Describe your project in 10 minutes. Receive a structured brief and proposal within 24h.",
+    "button": "Start my project for free"
+  },
+  "footer": {
+    "rights": "All rights reserved",
+    "privacy": "Privacy Policy"
+  },
+  "discovery": {
+    "title": "Start my project",
+    "subtitle": "Describe your project in a few steps. Our AI automatically generates a structured brief.",
+    "step": "Step",
+    "of": "of",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit my project",
+    "steps": {
+      "1": "Identification",
+      "2": "Project Type",
+      "3": "Description",
+      "4": "Users",
+      "5": "Features",
+      "6": "Constraints",
+      "7": "Summary"
+    }
+  },
+  "confirmation": {
+    "title": "Project received!",
+    "subtitle": "Your request has been successfully recorded.",
+    "message": "Our team is analyzing your needs. You will receive a personalized response within 24h.",
+    "back": "Back to home"
+  }
+}

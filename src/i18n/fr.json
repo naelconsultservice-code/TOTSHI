@@ -1,0 +1,71 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "services": "Services",
+    "portfolio": "Réalisations",
+    "about": "À Propos",
+    "startProject": "Démarrer mon projet"
+  },
+  "hero": {
+    "badge": "Agence de développement logiciel",
+    "title": "Transformons votre vision en",
+    "titleHighlight": "solution digitale",
+    "subtitle": "TOTSHI conçoit et livre des solutions numériques sur mesure — Web, Mobile, IA, FinTech, Enterprise. Du brief à la mise en production.",
+    "cta": "Démarrer mon projet",
+    "ctaSecondary": "Voir nos réalisations"
+  },
+  "services": {
+    "title": "Nos Domaines d'Expertise",
+    "subtitle": "Des solutions adaptées à chaque besoin métier",
+    "items": {
+      "web": { "title": "Développement Web", "desc": "Sites vitrine, applications web, plateformes SaaS" },
+      "mobile": { "title": "Applications Mobile", "desc": "iOS, Android, Flutter cross-platform" },
+      "enterprise": { "title": "Systèmes Enterprise", "desc": "ERP, CRM, systèmes de gestion métier" },
+      "fintech": { "title": "FinTech", "desc": "Paiements, Mobile Money, solutions financières" },
+      "ai": { "title": "IA & Automatisation", "desc": "Intégration IA, automatisation des processus" },
+      "security": { "title": "Cybersécurité", "desc": "Audit, protection, conformité" }
+    }
+  },
+  "process": {
+    "title": "Comment ça fonctionne",
+    "subtitle": "Un processus structuré pour des résultats prévisibles",
+    "steps": {
+      "1": { "title": "Vous décrivez votre projet", "desc": "Notre système guidé capture vos besoins en 7 étapes simples" },
+      "2": { "title": "L'IA analyse et structure", "desc": "Un cahier des charges est généré automatiquement en moins de 2 minutes" },
+      "3": { "title": "Nous vous recontactons", "desc": "Notre équipe vous envoie une proposition détaillée sous 24h" }
+    }
+  },
+  "cta": {
+    "title": "Prêt à démarrer votre projet ?",
+    "subtitle": "Décrivez votre projet en 10 minutes. Recevez un brief structuré et une proposition sous 24h.",
+    "button": "Démarrer mon projet gratuitement"
+  },
+  "footer": {
+    "rights": "Tous droits réservés",
+    "privacy": "Politique de confidentialité"
+  },
+  "discovery": {
+    "title": "Démarrer mon projet",
+    "subtitle": "Décrivez votre projet en quelques étapes. Notre IA génère un brief structuré automatiquement.",
+    "step": "Étape",
+    "of": "sur",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre mon projet",
+    "steps": {
+      "1": "Identification",
+      "2": "Type de projet",
+      "3": "Description",
+      "4": "Utilisateurs",
+      "5": "Fonctionnalités",
+      "6": "Contraintes",
+      "7": "Récapitulatif"
+    }
+  },
+  "confirmation": {
+    "title": "Projet reçu !",
+    "subtitle": "Votre demande a été enregistrée avec succès.",
+    "message": "Notre équipe analyse vos besoins. Vous recevrez une réponse personnalisée sous 24h.",
+    "back": "Retour à l'accueil"
+  }
+}
