@@ -10,19 +10,19 @@ export default function Footer({ locale }: { locale: string }) {
   return (
     <footer className="border-t border-white/5 bg-[#060610]">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 text-center md:text-left">
 
           {/* Brand */}
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 flex flex-col items-center md:items-start">
             <span className="text-2xl font-black text-white">
               TOT<span className="text-[#0066FF]">SHI</span>
             </span>
             <p className="mt-4 text-[#8892A4] text-sm leading-relaxed max-w-sm">
               {isFr
-                ? "Agence de développement logiciel spécialisée dans la conception et la livraison de solutions numériques sur mesure."
-                : "Software development agency specialized in designing and delivering custom digital solutions."}
+                ? "Agence de transformation numérique — développement logiciel, marketing digital et conseil stratégique pour accompagner la croissance de votre activité."
+                : "Digital transformation agency — software development, digital marketing and strategic consulting to support your business growth."}
             </p>
-            <div className="flex items-center gap-2 mt-4">
+            <div className="flex items-center justify-center md:justify-start gap-2 mt-4">
               <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
               <span className="text-xs text-[#4A5568]">
                 {isFr ? 'Disponible pour nouveaux projets' : 'Available for new projects'}
@@ -31,11 +31,11 @@ export default function Footer({ locale }: { locale: string }) {
           </div>
 
           {/* Navigation */}
-          <div>
+          <div className="flex flex-col items-center md:items-start">
             <p className="text-xs font-semibold text-white uppercase tracking-widest mb-5">
               {isFr ? 'Navigation' : 'Navigation'}
             </p>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col items-center md:items-start gap-3">
               {[
                 { href: `/${locale}`, label: t.nav.home },
                 { href: `/${locale}/services`, label: t.nav.services },
@@ -54,7 +54,7 @@ export default function Footer({ locale }: { locale: string }) {
           </div>
 
           {/* CTA */}
-          <div>
+          <div className="flex flex-col items-center md:items-start">
             <p className="text-xs font-semibold text-white uppercase tracking-widest mb-5">
               {isFr ? 'Démarrer' : 'Get started'}
             </p>
@@ -76,11 +76,11 @@ export default function Footer({ locale }: { locale: string }) {
         </div>
 
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row
-                        justify-between items-center gap-4">
+                        justify-center sm:justify-between items-center gap-4 text-center">
           <p className="text-xs text-[#4A5568]">
             © {year} TOTSHI. {t.footer.rights}.
           </p>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center justify-center gap-6">
             <Link
               href={`/${locale === 'fr' ? 'en' : 'fr'}`}
               className="text-xs text-[#4A5568] hover:text-[#8892A4] transition-colors uppercase font-semibold tracking-wider"

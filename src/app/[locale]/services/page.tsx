@@ -51,6 +51,22 @@ const services = [
       en: ['Security audit', 'Penetration testing', 'GDPR compliance', 'Data encryption'],
     },
   },
+  {
+    icon: '📈',
+    key: 'marketing',
+    features: {
+      fr: ['Stratégie de contenu', 'SEO & référencement', 'Publicité en ligne (Ads)', 'Réseaux sociaux & growth'],
+      en: ['Content strategy', 'SEO', 'Online advertising (Ads)', 'Social media & growth'],
+    },
+  },
+  {
+    icon: '🧭',
+    key: 'consulting',
+    features: {
+      fr: ['Audit digital', 'Stratégie de transformation', 'Accompagnement au changement', 'Choix technologiques'],
+      en: ['Digital audit', 'Transformation strategy', 'Change management support', 'Technology decisions'],
+    },
+  },
 ]
 
 export default async function ServicesPage({

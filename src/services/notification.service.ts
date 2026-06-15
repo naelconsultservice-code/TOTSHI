@@ -1,7 +1,7 @@
 import { resend } from '@/lib/resend'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL!
-const FROM_EMAIL = 'TOTSHI <noreply@totshi.com>'
+const FROM_EMAIL = 'TOTSHI <onboarding@resend.dev>'
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL!
 
 export async function sendProspectConfirmation(params: {

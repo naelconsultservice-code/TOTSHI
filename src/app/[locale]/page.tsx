@@ -9,13 +9,14 @@ const services = [
   { icon: '💳', key: 'fintech' },
   { icon: '🤖', key: 'ai' },
   { icon: '🔒', key: 'security' },
+  { icon: '📈', key: 'marketing' },
+  { icon: '🧭', key: 'consulting' },
 ]
 
 const stats = [
-  { value: '50+', labelFr: 'Projets livrés', labelEn: 'Projects delivered' },
-  { value: '8', labelFr: 'Domaines d\'expertise', labelEn: 'Areas of expertise' },
+  { value: '8', labelFr: "Domaines d'expertise", labelEn: 'Areas of expertise' },
   { value: '24h', labelFr: 'Délai de réponse', labelEn: 'Response time' },
-  { value: '100%', labelFr: 'Satisfaction client', labelEn: 'Client satisfaction' },
+  { value: '100%', labelFr: 'Sur mesure', labelEn: 'Tailor-made' },
 ]
 
 export default async function HomePage({
@@ -112,7 +113,7 @@ export default async function HomePage({
       {/* ═══════════════════════════════════════ STATS */}
       <section className="border-y border-white/5 bg-white/[0.015]">
         <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
             {stats.map((stat) => (
               <div key={stat.value} className="text-center">
                 <div className="text-3xl sm:text-4xl font-black text-white mb-1">
@@ -131,7 +132,7 @@ export default async function HomePage({
       <section className="py-28 px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
 
-          <div className="max-w-2xl mb-16">
+          <div className="max-w-2xl mb-16 text-center md:text-left mx-auto md:mx-0">
             <p className="text-sm font-semibold text-[#0066FF] uppercase tracking-widest mb-4">
               {isFr ? 'Nos expertises' : 'Our expertise'}
             </p>
@@ -143,7 +144,7 @@ export default async function HomePage({
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {services.map((service) => {
               const item = t.services.items[service.key as keyof typeof t.services.items]
               return (

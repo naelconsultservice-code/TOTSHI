@@ -7,10 +7,10 @@
     "startProject": "Start my project"
   },
   "hero": {
-    "badge": "Software development agency",
+    "badge": "Digital transformation agency",
     "title": "We transform your vision into a",
     "titleHighlight": "digital solution",
-    "subtitle": "TOTSHI designs and delivers custom digital solutions — Web, Mobile, AI, FinTech, Enterprise. From brief to production.",
+    "subtitle": "TOTSHI supports your growth with software development, digital marketing and strategic consulting — Web, Mobile, AI, FinTech, Enterprise. From brief to production.",
     "cta": "Start my project",
     "ctaSecondary": "View our work"
   },
@@ -23,7 +23,9 @@
       "enterprise": { "title": "Enterprise Systems", "desc": "ERP, CRM, business management systems" },
       "fintech": { "title": "FinTech", "desc": "Payments, Mobile Money, financial solutions" },
       "ai": { "title": "AI & Automation", "desc": "AI integration, process automation" },
-      "security": { "title": "Cybersecurity", "desc": "Audit, protection, compliance" }
+      "security": { "title": "Cybersecurity", "desc": "Audit, protection, compliance" },
+      "marketing": { "title": "Digital Marketing", "desc": "Digital strategy, SEO, online advertising, social media" },
+      "consulting": { "title": "Consulting & Strategy", "desc": "Digital audit, transformation support, technology strategy" }
     }
   },
   "process": {

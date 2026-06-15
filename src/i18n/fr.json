@@ -7,10 +7,10 @@
     "startProject": "Démarrer mon projet"
   },
   "hero": {
-    "badge": "Agence de développement logiciel",
+    "badge": "Agence de transformation numérique",
     "title": "Transformons votre vision en",
     "titleHighlight": "solution digitale",
-    "subtitle": "TOTSHI conçoit et livre des solutions numériques sur mesure — Web, Mobile, IA, FinTech, Enterprise. Du brief à la mise en production.",
+    "subtitle": "TOTSHI accompagne votre croissance avec le développement logiciel, le marketing digital et la consultance stratégique — Web, Mobile, IA, FinTech, Enterprise. Du brief à la mise en production.",
     "cta": "Démarrer mon projet",
     "ctaSecondary": "Voir nos réalisations"
   },
@@ -23,7 +23,9 @@
       "enterprise": { "title": "Systèmes Enterprise", "desc": "ERP, CRM, systèmes de gestion métier" },
       "fintech": { "title": "FinTech", "desc": "Paiements, Mobile Money, solutions financières" },
       "ai": { "title": "IA & Automatisation", "desc": "Intégration IA, automatisation des processus" },
-      "security": { "title": "Cybersécurité", "desc": "Audit, protection, conformité" }
+      "security": { "title": "Cybersécurité", "desc": "Audit, protection, conformité" },
+      "marketing": { "title": "Marketing Digital", "desc": "Stratégie digitale, SEO, publicité en ligne, réseaux sociaux" },
+      "consulting": { "title": "Consultance & Stratégie", "desc": "Audit digital, accompagnement à la transformation, stratégie technologique" }
     }
   },
   "process": {
