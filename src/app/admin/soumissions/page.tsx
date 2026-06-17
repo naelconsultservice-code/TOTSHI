@@ -20,10 +20,17 @@ const statusLabels: Record<string, string> = {
   CONFIRME: 'Confirmé', NON_QUALIFIE: 'Non qualifié', ARCHIVE: 'Archivé',
 }
 
+const needTypeBadge: Record<string, { label: string; className: string }> = {
+  MARKETING: { label: '📈 Marketing', className: 'bg-purple-500/10 text-purple-400' },
+  CONSULTANCE: { label: '🧭 Conseil', className: 'bg-orange-500/10 text-orange-400' },
+  INDETERMINE: { label: '🤔 À qualifier', className: 'bg-gray-500/10 text-gray-500' },
+  DEVELOPPEMENT: { label: '💻 Dev', className: 'bg-blue-500/10 text-blue-400' },
+}
+
 export default async function SoumissionsPage({
   searchParams,
 }: {
-  searchParams: { status?: string; page?: string }
+  searchParams: { status?: string; page?: string; needType?: string }
 }) {
   const page = parseInt(searchParams.page ?? '1')
   const status = searchParams.status
@@ -39,6 +46,7 @@ export default async function SoumissionsPage({
           </div>
         </div>
 
+        {/* Filtres statut */}
         <div className="flex flex-wrap gap-2 mb-6">
           {['', 'NOUVEAU', 'EN_COURS', 'CONFIRME', 'ARCHIVE'].map((s) => (
             <Link
@@ -71,41 +79,52 @@ export default async function SoumissionsPage({
                 </tr>
               </thead>
               <tbody>
-                {submissions.map((sub) => (
-                  <tr key={sub.id} className="border-b border-white/5 hover:bg-white/2 transition-colors">
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {new Date(sub.createdAt).toLocaleDateString('fr-FR')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <p className="text-sm text-white font-medium">
-                        {sub.prospect.firstName} {sub.prospect.lastName}
-                      </p>
-                      <p className="text-xs text-gray-600">{sub.prospect.email}</p>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-400">
-                      {sub.projectType.replace(/_/g, ' ')}
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className="text-sm font-semibold text-[#0066FF]">
-                        {sub.completenessScore ?? 0}/100
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <span className={`text-xs font-medium px-2.5 py-1 rounded-full
-                        ${statusColors[sub.status] ?? 'bg-gray-500/10 text-gray-400'}`}>
-                        {statusLabels[sub.status] ?? sub.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <Link
-                        href={`/admin/soumissions/${sub.id}`}
-                        className="text-xs text-[#0066FF] hover:text-white transition-colors"
-                      >
-                        Voir →
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
+                {submissions.map((sub) => {
+                  const needType = (sub as any).needType ?? 'DEVELOPPEMENT'
+                  const badge = needTypeBadge[needType] ?? needTypeBadge.DEVELOPPEMENT
+                  return (
+                    <tr key={sub.id} className="border-b border-white/5 hover:bg-white/2 transition-colors">
+                      <td className="px-6 py-4 text-sm text-gray-500">
+                        {new Date(sub.createdAt).toLocaleDateString('fr-FR')}
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="text-sm text-white font-medium">
+                          {sub.prospect.firstName} {sub.prospect.lastName}
+                        </p>
+                        <p className="text-xs text-gray-600">{sub.prospect.email}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col gap-1.5">
+                          <span className={`text-xs font-medium px-2 py-0.5 rounded-full w-fit ${badge.className}`}>
+                            {badge.label}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            {sub.projectType.replace(/_/g, ' ')}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="text-sm font-semibold text-[#0066FF]">
+                          {sub.completenessScore ?? 0}/100
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`text-xs font-medium px-2.5 py-1 rounded-full
+                          ${statusColors[sub.status] ?? 'bg-gray-500/10 text-gray-400'}`}>
+                          {statusLabels[sub.status] ?? sub.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Link
+                          href={`/admin/soumissions/${sub.id}`}
+                          className="text-xs text-[#0066FF] hover:text-white transition-colors"
+                        >
+                          Voir →
+                        </Link>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           )}

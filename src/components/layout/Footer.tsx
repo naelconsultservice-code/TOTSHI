@@ -41,6 +41,7 @@ export default function Footer({ locale }: { locale: string }) {
                 { href: `/${locale}/services`, label: t.nav.services },
                 { href: `/${locale}/realisations`, label: t.nav.portfolio },
                 { href: `/${locale}/a-propos`, label: t.nav.about },
+                { href: `/${locale}/contact`, label: 'Contact' },
               ].map((link) => (
                 <Link
                   key={link.href}

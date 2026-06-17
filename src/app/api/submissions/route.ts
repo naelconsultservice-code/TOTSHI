@@ -37,9 +37,12 @@ export async function POST(req: NextRequest) {
       submissionId: submission.id,
     }).catch((err) => console.error('[Confirmation Email Error]', err))
 
-    triggerAIGeneration(submission.id, prospect.language).catch((err) =>
-      console.error('[AI Generation Error]', err)
-    )
+    // Passage du needType pour adapter le prompt IA
+    triggerAIGeneration(
+      submission.id,
+      prospect.language,
+      parsed.data.needType
+    ).catch((err) => console.error('[AI Generation Error]', err))
 
     return NextResponse.json(
       { success: true, submissionId: submission.id, isDuplicate },

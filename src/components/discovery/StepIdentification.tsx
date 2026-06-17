@@ -121,7 +121,7 @@ function CountryCodePicker({
       </button>
 
       {open && (
-        <div className="absolute top-full left-0 mt-1 w-64 bg-[#111118] border border-white/10
+        <div className="absolute top-full left-0 mt-1 w-72 max-w-[85vw] bg-[#111118] border border-white/10
                         rounded-xl shadow-2xl z-50 overflow-hidden">
           <div className="p-2 border-b border-white/5">
             <input
@@ -327,7 +327,7 @@ export default function StepIdentification({ data, onChange, onNext, locale }: P
               type="tel"
               value={phoneNumber}
               onChange={(e) => handlePhoneChange(e.target.value)}
-              className="flex-1 bg-white/5 border border-l-0 border-white/10 rounded-r-xl
+              className="flex-1 min-w-0 bg-white/5 border border-l-0 border-white/10 rounded-r-xl
                          px-4 py-3 text-white placeholder-gray-600 focus:outline-none
                          focus:border-[#0066FF]/50 transition-colors"
               placeholder={fr ? 'Numéro' : 'Number'}

@@ -1,81 +1,113 @@
-export type BriefData = {
-  submissionId: string
-  createdAt: Date
-  prospect: {
-    firstName: string
-    lastName: string
-    email: string
-    phone?: string | null
-    company?: string | null
-    country: string
-    sector: string
-  }
-  projectType: string
-  description: string
-  targetUsers: any
-  features: any
-  constraints: any
-  completenessScore?: number | null
+import type { SubmissionInput } from '@/validations/submission.schema'
+
+const needTypeLabels: Record<string, string> = {
+  DEVELOPPEMENT: 'Développement logiciel',
+  MARKETING: 'Marketing & Communication',
+  CONSULTANCE: 'Consultance & Stratégie',
+  INDETERMINE: 'À déterminer',
 }
 
-export function compileBrief(data: BriefData, language: 'fr' | 'en'): string {
-  const isFr = language === 'fr'
-  const p = data.prospect
-  const targetUsers = data.targetUsers as any
-  const features = data.features as any
-  const constraints = data.constraints as any
+export function compileBrief(data: SubmissionInput & { needType: string }): string {
+  const lines: string[] = []
 
-  const featuresList =
-    (features?.selected ?? [])
-      .map((f: any) => `  - ${f.label} [${f.priority}]`)
-      .join('\n') || (isFr ? '  Non renseigné' : '  Not specified')
+  lines.push('# BRIEF STRUCTURÉ — TOTSHI')
+  lines.push(`Date : ${new Date().toLocaleDateString('fr-FR')}`)
+  lines.push('')
 
-  const date = new Date(data.createdAt).toLocaleString(
-    isFr ? 'fr-FR' : 'en-US'
-  )
+  // Catégorie de besoin
+  lines.push('## CATÉGORIE DE BESOIN')
+  lines.push(`Type : ${needTypeLabels[data.needType] ?? data.needType}`)
+  lines.push(`Précision : ${data.projectType.replace(/_/g, ' ')}`)
+  lines.push('')
 
-  return `
-${'═'.repeat(51)}
-${isFr ? 'BRIEF PROJET — TOTSHI' : 'PROJECT BRIEF — TOTSHI'}
-${isFr ? `Soumission #${data.submissionId.slice(0, 8).toUpperCase()} — ${date}` : `Submission #${data.submissionId.slice(0, 8).toUpperCase()} — ${date}`}
-${'═'.repeat(51)}
+  // Prospect
+  lines.push('## PROSPECT')
+  lines.push(`Nom : ${data.firstName} ${data.lastName}`)
+  lines.push(`Email : ${data.email}`)
+  if (data.phone) lines.push(`Téléphone : ${data.phone}`)
+  if (data.company) lines.push(`Entreprise : ${data.company}`)
+  lines.push(`Pays : ${data.country}`)
+  lines.push(`Secteur : ${data.sector}`)
+  lines.push(`Langue : ${data.language.toUpperCase()}`)
+  lines.push('')
 
-${isFr ? 'INFORMATIONS PROSPECT' : 'PROSPECT INFORMATION'}
-  ${isFr ? 'Nom' : 'Name'}           : ${p.firstName} ${p.lastName}
-  Email          : ${p.email}
-  ${isFr ? 'Téléphone' : 'Phone'}    : ${p.phone ?? (isFr ? 'Non renseigné' : 'Not provided')}
-  ${isFr ? 'Entreprise' : 'Company'} : ${p.company ?? (isFr ? 'Non renseigné' : 'Not provided')}
-  ${isFr ? 'Pays' : 'Country'}       : ${p.country}
-  ${isFr ? 'Secteur' : 'Sector'}     : ${p.sector}
-  ${isFr ? 'Langue' : 'Language'}    : ${language.toUpperCase()}
+  // Description
+  lines.push('## DESCRIPTION DU BESOIN')
+  lines.push(data.description)
+  lines.push('')
 
-${isFr ? 'TYPE DE PROJET' : 'PROJECT TYPE'}
-  ${isFr ? 'Catégorie' : 'Category'} : ${data.projectType.replace(/_/g, ' ')}
+  // Utilisateurs/cibles
+  if (data.needType === 'DEVELOPPEMENT' || data.needType === 'INDETERMINE') {
+    lines.push('## UTILISATEURS CIBLES')
+    lines.push(`Profil : ${data.targetUsers.profile}`)
+    if (data.targetUsers.estimatedVolume) lines.push(`Volume : ${data.targetUsers.estimatedVolume}`)
+    if (data.targetUsers.geography) lines.push(`Géographie : ${data.targetUsers.geography}`)
+    if (data.targetUsers.techLevel) lines.push(`Niveau technique : ${data.targetUsers.techLevel}`)
+    if (data.targetUsers.accessType) lines.push(`Type d'accès : ${data.targetUsers.accessType}`)
+  } else {
+    lines.push('## CIBLE')
+    lines.push(`Description de la cible : ${data.targetUsers.profile}`)
+    if (data.targetUsers.geography) lines.push(`Zone géographique : ${data.targetUsers.geography}`)
+  }
+  lines.push('')
 
-${isFr ? 'DESCRIPTION DU PROJET' : 'PROJECT DESCRIPTION'}
-  ${data.description}
+  // Fonctionnalités / Prestations
+  if (data.features.selected.length > 0) {
+    if (data.needType === 'DEVELOPPEMENT') {
+      lines.push('## FONCTIONNALITÉS')
+    } else if (data.needType === 'MARKETING') {
+      lines.push('## PRESTATIONS SOUHAITÉES')
+    } else if (data.needType === 'CONSULTANCE') {
+      lines.push('## LIVRABLES ATTENDUS')
+    } else {
+      lines.push('## ÉLÉMENTS SOUHAITÉS')
+    }
 
-${isFr ? 'UTILISATEURS CIBLES' : 'TARGET USERS'}
-  ${isFr ? 'Profil' : 'Profile'}          : ${targetUsers?.profile ?? '-'}
-  ${isFr ? 'Volume estimé' : 'Est. volume'}: ${targetUsers?.estimatedVolume ?? '-'}
-  ${isFr ? 'Géographie' : 'Geography'}    : ${targetUsers?.geography ?? '-'}
-  ${isFr ? 'Niveau tech' : 'Tech level'}  : ${targetUsers?.techLevel ?? '-'}
-  ${isFr ? 'Type accès' : 'Access type'}  : ${targetUsers?.accessType ?? '-'}
+    const byPriority: Record<string, string[]> = {
+      indispensable: [],
+      souhaitable: [],
+      futur: [],
+    }
+    data.features.selected.forEach((f) => {
+      const key = f.priority in byPriority ? f.priority : 'souhaitable'
+      byPriority[key].push(f.label)
+    })
+    if (byPriority.indispensable.length) lines.push(`Indispensable : ${byPriority.indispensable.join(', ')}`)
+    if (byPriority.souhaitable.length) lines.push(`Souhaitable : ${byPriority.souhaitable.join(', ')}`)
+    if (byPriority.futur.length) lines.push(`Phase suivante : ${byPriority.futur.join(', ')}`)
 
-${isFr ? 'FONCTIONNALITÉS SOUHAITÉES' : 'DESIRED FEATURES'}
-${featuresList}
-  ${isFr ? 'Notes libres' : 'Free notes'} : ${features?.freeText || (isFr ? 'Non renseigné' : 'Not specified')}
+    if (data.features.freeText) {
+      lines.push(`Autres éléments : ${data.features.freeText}`)
+    }
+    lines.push('')
+  }
 
-${isFr ? 'CONTRAINTES & CONTEXTE' : 'CONSTRAINTS & CONTEXT'}
-  ${isFr ? 'Budget' : 'Budget'}           : ${constraints?.budget || '-'}
-  ${isFr ? 'Délai' : 'Timeline'}          : ${constraints?.timeline || '-'}
-  ${isFr ? 'Système actuel' : 'Current system'} : ${constraints?.currentSystem || '-'}
-  ${isFr ? 'Contraintes tech' : 'Tech constraints'}: ${constraints?.technicalConstraints || '-'}
-  ${isFr ? 'Références' : 'References'}   : ${constraints?.references || '-'}
-  ${isFr ? 'Urgence' : 'Urgency'}         : ${constraints?.urgencyLevel || '-'}
+  // Contraintes
+  lines.push('## CONTRAINTES & CONTEXTE')
+  if (data.constraints.budget) lines.push(`Budget : ${data.constraints.budget}`)
+  if (data.constraints.timeline) lines.push(`Délai : ${data.constraints.timeline}`)
+  if (data.constraints.urgencyLevel) lines.push(`Urgence : ${data.constraints.urgencyLevel}`)
+  if (data.constraints.currentSystem) lines.push(`Système actuel : ${data.constraints.currentSystem}`)
+  if (data.constraints.references) lines.push(`Références : ${data.constraints.references}`)
+  if (data.constraints.technicalConstraints) lines.push(`Contraintes techniques : ${data.constraints.technicalConstraints}`)
+  lines.push('')
 
-${'═'.repeat(51)}
-${isFr ? `SCORE DE COMPLÉTUDE : ${data.completenessScore ?? 0} / 100` : `COMPLETENESS SCORE: ${data.completenessScore ?? 0} / 100`}
-${'═'.repeat(51)}
-`.trim()
+  // Score
+  const filledFields = [
+    data.description.length > 100,
+    data.targetUsers.profile.length > 0,
+    data.targetUsers.estimatedVolume,
+    data.targetUsers.geography,
+    data.features.selected.length > 0,
+    data.constraints.budget,
+    data.constraints.timeline,
+    data.constraints.references,
+    data.phone,
+    data.company,
+  ].filter(Boolean).length
+
+  const score = Math.round(50 + (filledFields / 10) * 50)
+  lines.push(`## SCORE DE COMPLÉTUDE : ${score}/100`)
+
+  return lines.join('\n')
 }

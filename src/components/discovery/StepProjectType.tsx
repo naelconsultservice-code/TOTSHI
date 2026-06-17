@@ -10,7 +10,7 @@ type Props = {
   locale: string
 }
 
-const projectTypes = [
+const devTypes = [
   { id: 'SITE_WEB', icon: '🌐', labelFr: 'Site Web', labelEn: 'Website' },
   { id: 'APP_WEB', icon: '💻', labelFr: 'Application Web', labelEn: 'Web App' },
   { id: 'APP_MOBILE', icon: '📱', labelFr: 'Application Mobile', labelEn: 'Mobile App' },
@@ -23,20 +23,83 @@ const projectTypes = [
   { id: 'AUTRE', icon: '✨', labelFr: 'Autre', labelEn: 'Other' },
 ]
 
+const marketingTypes = [
+  { id: 'STRATEGIE_DIGITALE', icon: '🎯', labelFr: 'Stratégie digitale', labelEn: 'Digital strategy' },
+  { id: 'SEO_REFERENCEMENT', icon: '🔍', labelFr: 'SEO & Référencement', labelEn: 'SEO' },
+  { id: 'PUBLICITE_EN_LIGNE', icon: '📣', labelFr: 'Publicité en ligne (Ads)', labelEn: 'Online advertising' },
+  { id: 'RESEAUX_SOCIAUX', icon: '📱', labelFr: 'Réseaux sociaux', labelEn: 'Social media' },
+  { id: 'CREATION_CONTENU', icon: '✍️', labelFr: 'Création de contenu', labelEn: 'Content creation' },
+  { id: 'EMAIL_MARKETING', icon: '📧', labelFr: 'Email marketing', labelEn: 'Email marketing' },
+  { id: 'BRANDING_IDENTITE', icon: '🎨', labelFr: 'Branding & Identité', labelEn: 'Branding & Identity' },
+  { id: 'MARKETING_COMPLET', icon: '🚀', labelFr: 'Accompagnement complet', labelEn: 'Full marketing support' },
+]
+
+const consultingTypes = [
+  { id: 'AUDIT_DIGITAL', icon: '🔎', labelFr: 'Audit digital', labelEn: 'Digital audit' },
+  { id: 'STRATEGIE_TRANSFORMATION', icon: '🧭', labelFr: 'Stratégie de transformation', labelEn: 'Transformation strategy' },
+  { id: 'CHOIX_TECHNOLOGIQUES', icon: '⚙️', labelFr: 'Choix technologiques', labelEn: 'Technology decisions' },
+  { id: 'ACCOMPAGNEMENT_PROJET', icon: '🤝', labelFr: 'Accompagnement de projet', labelEn: 'Project support' },
+  { id: 'FORMATION_EQUIPES', icon: '🎓', labelFr: 'Formation des équipes', labelEn: 'Team training' },
+  { id: 'CONSEIL_CROISSANCE', icon: '📊', labelFr: 'Conseil en croissance', labelEn: 'Growth consulting' },
+]
+
+const indeterminateTypes = [
+  { id: 'PRESENCE_EN_LIGNE', icon: '🌍', labelFr: 'Améliorer ma présence en ligne', labelEn: 'Improve my online presence' },
+  { id: 'AUTOMATISER_PROCESSUS', icon: '⚡', labelFr: 'Automatiser mes processus', labelEn: 'Automate my processes' },
+  { id: 'DEVELOPPER_ACTIVITE', icon: '📈', labelFr: 'Développer mon activité', labelEn: 'Grow my business' },
+  { id: 'RESOUDRE_PROBLEME', icon: '🔧', labelFr: 'Résoudre un problème spécifique', labelEn: 'Solve a specific problem' },
+]
+
+function getTypes(needType: string) {
+  switch (needType) {
+    case 'DEVELOPPEMENT': return devTypes
+    case 'MARKETING': return marketingTypes
+    case 'CONSULTANCE': return consultingTypes
+    default: return indeterminateTypes
+  }
+}
+
+function getTitle(needType: string, fr: boolean) {
+  switch (needType) {
+    case 'DEVELOPPEMENT':
+      return fr ? 'Type de développement' : 'Development type'
+    case 'MARKETING':
+      return fr ? 'Service marketing' : 'Marketing service'
+    case 'CONSULTANCE':
+      return fr ? 'Type de consultance' : 'Consulting type'
+    default:
+      return fr ? 'Quel est votre objectif principal ?' : 'What is your main objective?'
+  }
+}
+
+function getSubtitle(needType: string, fr: boolean) {
+  switch (needType) {
+    case 'DEVELOPPEMENT':
+      return fr ? 'Sélectionnez le type de solution qui correspond à votre besoin.' : 'Select the type of solution that matches your need.'
+    case 'MARKETING':
+      return fr ? 'Sur quel levier marketing souhaitez-vous agir ?' : 'Which marketing lever do you want to activate?'
+    case 'CONSULTANCE':
+      return fr ? 'Quel type d\'accompagnement recherchez-vous ?' : 'What type of support are you looking for?'
+    default:
+      return fr ? 'Cela nous aidera à vous orienter vers la bonne expertise.' : 'This will help us direct you to the right expertise.'
+  }
+}
+
 export default function StepProjectType({ data, onChange, onNext, onPrev, locale }: Props) {
   const fr = locale === 'fr'
+  const types = getTypes(data.needType)
 
   return (
     <div>
       <h2 className="text-xl font-bold text-white mb-2">
-        {fr ? 'Type de projet' : 'Project type'}
+        {getTitle(data.needType, fr)}
       </h2>
       <p className="text-gray-500 text-sm mb-6">
-        {fr ? 'Sélectionnez le type qui correspond le mieux à votre projet.' : 'Select the type that best matches your project.'}
+        {getSubtitle(data.needType, fr)}
       </p>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-8">
-        {projectTypes.map((type) => (
+        {types.map((type) => (
           <button
             key={type.id}
             onClick={() => onChange({ projectType: type.id })}

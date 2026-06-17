@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import type { FormData } from './DiscoveryFlow'
 
 type Props = {
@@ -13,10 +12,26 @@ type Props = {
   locale: string
 }
 
+const needTypeLabels: Record<string, { fr: string; en: string }> = {
+  DEVELOPPEMENT: { fr: 'Développement logiciel', en: 'Software development' },
+  MARKETING: { fr: 'Marketing & Communication', en: 'Marketing & Communication' },
+  CONSULTANCE: { fr: 'Consultance & Stratégie', en: 'Consulting & Strategy' },
+  INDETERMINE: { fr: 'À déterminer', en: 'To be determined' },
+}
+
 export default function StepReview({ data, onChange, onSubmit, onPrev, submitting, error, locale }: Props) {
   const fr = locale === 'fr'
 
+  const needLabel = needTypeLabels[data.needType]?.[fr ? 'fr' : 'en'] ?? data.needType
+
   const sections = [
+    {
+      title: fr ? 'Type de besoin' : 'Need type',
+      items: [
+        { label: fr ? 'Catégorie' : 'Category', value: needLabel },
+        { label: fr ? 'Précision' : 'Specification', value: data.projectType.replace(/_/g, ' ') || '—' },
+      ],
+    },
     {
       title: fr ? 'Vos informations' : 'Your information',
       items: [
@@ -31,7 +46,6 @@ export default function StepReview({ data, onChange, onSubmit, onPrev, submittin
     {
       title: fr ? 'Votre projet' : 'Your project',
       items: [
-        { label: fr ? 'Type' : 'Type', value: data.projectType.replace(/_/g, ' ') },
         { label: fr ? 'Description' : 'Description', value: data.description },
       ],
     },
@@ -41,8 +55,6 @@ export default function StepReview({ data, onChange, onSubmit, onPrev, submittin
         { label: fr ? 'Profil' : 'Profile', value: data.targetUsers.profile },
         { label: fr ? 'Volume' : 'Volume', value: data.targetUsers.estimatedVolume || '—' },
         { label: fr ? 'Géographie' : 'Geography', value: data.targetUsers.geography || '—' },
-        { label: fr ? 'Niveau tech' : 'Tech level', value: data.targetUsers.techLevel },
-        { label: fr ? 'Accès' : 'Access', value: data.targetUsers.accessType },
       ],
     },
   ]
@@ -65,22 +77,23 @@ export default function StepReview({ data, onChange, onSubmit, onPrev, submittin
       </h2>
       <p className="text-gray-500 text-sm mb-6">
         {fr
-          ? 'Vérifiez vos informations avant de soumettre votre projet.'
-          : 'Review your information before submitting your project.'}
+          ? 'Vérifiez vos informations avant de soumettre.'
+          : 'Review your information before submitting.'}
       </p>
 
-      {/* Sections récap */}
       <div className="flex flex-col gap-4 mb-6">
         {sections.map((section) => (
           <div key={section.title} className="bg-white/3 rounded-xl p-4 border border-white/5">
             <h3 className="text-[#0066FF] text-xs font-semibold uppercase tracking-wide mb-3">
               {section.title}
             </h3>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               {section.items.map(({ label, value }) => (
-                <div key={label} className="flex gap-3">
-                  <span className="text-gray-600 text-sm min-w-24 flex-shrink-0">{label}</span>
-                  <span className="text-gray-300 text-sm break-words">{value}</span>
+                <div key={label} className="flex flex-col gap-0.5 min-w-0">
+                  <span className="text-gray-600 text-xs uppercase tracking-wide">{label}</span>
+                  <span className="text-gray-300 text-sm leading-relaxed break-words whitespace-pre-wrap">
+                    {value}
+                  </span>
                 </div>
               ))}
             </div>
@@ -90,7 +103,7 @@ export default function StepReview({ data, onChange, onSubmit, onPrev, submittin
         {data.features.selected.length > 0 && (
           <div className="bg-white/3 rounded-xl p-4 border border-white/5">
             <h3 className="text-[#0066FF] text-xs font-semibold uppercase tracking-wide mb-3">
-              {fr ? 'Fonctionnalités' : 'Features'}
+              {fr ? 'Éléments sélectionnés' : 'Selected items'}
             </h3>
             <div className="flex flex-wrap gap-2">
               {data.features.selected.map((f) => (
@@ -112,7 +125,6 @@ export default function StepReview({ data, onChange, onSubmit, onPrev, submittin
         )}
       </div>
 
-      {/* Bouton retour pour modifier */}
       <button
         onClick={onPrev}
         className="text-sm text-gray-500 hover:text-gray-300 transition-colors mb-6 block"
@@ -120,7 +132,7 @@ export default function StepReview({ data, onChange, onSubmit, onPrev, submittin
         ← {fr ? 'Modifier une étape' : 'Edit a step'}
       </button>
 
-      {/* Consentement RGPD */}
+      {/* RGPD */}
       <div
         onClick={() => onChange({ gdprConsent: !data.gdprConsent })}
         className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer
@@ -142,7 +154,6 @@ export default function StepReview({ data, onChange, onSubmit, onPrev, submittin
         </p>
       </div>
 
-      {/* Erreur */}
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3
                         text-red-400 text-sm mb-4">
@@ -150,24 +161,20 @@ export default function StepReview({ data, onChange, onSubmit, onPrev, submittin
         </div>
       )}
 
-      {/* Submit */}
       <button
         onClick={onSubmit}
         disabled={!data.gdprConsent || submitting}
         className="w-full bg-[#0066FF] hover:bg-[#0052CC] disabled:opacity-40
                    disabled:cursor-not-allowed text-white font-semibold py-4
-                   rounded-xl transition-all text-lg hover:scale-[1.01]
-                   hover:shadow-lg hover:shadow-[#0066FF]/25"
+                   rounded-xl transition-all text-lg"
       >
         {submitting
           ? (fr ? '⏳ Traitement en cours...' : '⏳ Processing...')
-          : (fr ? '🚀 Soumettre mon projet' : '🚀 Submit my project')}
+          : (fr ? '🚀 Soumettre ma demande' : '🚀 Submit my request')}
       </button>
 
       <p className="text-center text-gray-600 text-xs mt-4">
-        {fr
-          ? '🔒 Vos données sont sécurisées. Réponse sous 24h.'
-          : '🔒 Your data is secure. Response within 24h.'}
+        {fr ? '🔒 Données sécurisées. Réponse sous 24h.' : '🔒 Secure data. Response within 24h.'}
       </p>
     </div>
   )
