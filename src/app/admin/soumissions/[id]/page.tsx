@@ -87,7 +87,7 @@ export default async function SubmissionDetailPage({
             <div className="flex flex-col gap-2">
               {submission.statusHistory.map((h) => (
                 <div key={h.id} className="text-xs text-gray-600">
-                  <span className="text-gray-400">{h.newStatus}</span>
+                  <span className="text-gray-400">{h.toStatus}</span>
                   {' · '}
                   {new Date(h.createdAt).toLocaleDateString('fr-FR')}
                 </div>
