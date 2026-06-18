@@ -208,7 +208,7 @@ export default async function SubmissionDetailPage({
                 <span className={`text-xs px-2 py-1 rounded-full
                   ${draft.generationStatus === 'COMPLETED'
                     ? 'bg-green-500/10 text-green-400'
-                    : draft.generationStatus === 'PROCESSING'
+                    : draft.generationStatus === 'GENERATING'
                     ? 'bg-yellow-500/10 text-yellow-400'
                     : 'bg-red-500/10 text-red-400'
                   }`}>
