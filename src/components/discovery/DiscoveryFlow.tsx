@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import StepNeedType from './StepNeedType'
 import StepIdentification from './StepIdentification'
 import StepProjectType from './StepProjectType'
 import StepDescription from './StepDescription'
@@ -11,7 +12,7 @@ import StepConstraints from './StepConstraints'
 import StepReview from './StepReview'
 
 export type FormData = {
-  // Étape 1
+  needType: string
   firstName: string
   lastName: string
   email: string
@@ -19,11 +20,8 @@ export type FormData = {
   company: string
   country: string
   sector: string
-  // Étape 2
   projectType: string
-  // Étape 3
   description: string
-  // Étape 4
   targetUsers: {
     profile: string
     estimatedVolume: string
@@ -31,12 +29,10 @@ export type FormData = {
     techLevel: string
     accessType: string
   }
-  // Étape 5
   features: {
     selected: Array<{ id: string; label: string; priority: string }>
     freeText: string
   }
-  // Étape 6
   constraints: {
     budget: string
     timeline: string
@@ -45,14 +41,14 @@ export type FormData = {
     references: string
     urgencyLevel: string
   }
-  // RGPD
   gdprConsent: boolean
   _hp: string
 }
 
-const STORAGE_KEY = 'totshi_discovery_progress'
+const STORAGE_KEY = 'totshi_discovery_v2'
 
 const initialData: FormData = {
+  needType: '',
   firstName: '', lastName: '', email: '', phone: '',
   company: '', country: '', sector: '',
   projectType: '',
@@ -76,21 +72,19 @@ export default function DiscoveryFlow({ locale }: { locale: string }) {
   const [formData, setFormData] = useState<FormData>(initialData)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const totalSteps = 7
+  const totalSteps = 8
 
-  // Charger progression localStorage
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) {
         const { data, savedStep } = JSON.parse(saved)
-        setFormData(data)
+        setFormData({ ...initialData, ...data })
         setStep(savedStep)
       }
     } catch {}
   }, [])
 
-  // Sauvegarder progression
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ data: formData, savedStep: step }))
@@ -116,11 +110,7 @@ export default function DiscoveryFlow({ locale }: { locale: string }) {
     setError('')
 
     try {
-      const payload = {
-        ...formData,
-        language: locale,
-        gdprConsent: true,
-      }
+      const payload = { ...formData, language: locale, gdprConsent: true }
 
       const res = await fetch('/api/submissions', {
         method: 'POST',
@@ -136,7 +126,6 @@ export default function DiscoveryFlow({ locale }: { locale: string }) {
         return
       }
 
-      // Nettoyer localStorage après succès
       localStorage.removeItem(STORAGE_KEY)
       router.push(`/${locale}/confirmation`)
     } catch {
@@ -148,12 +137,11 @@ export default function DiscoveryFlow({ locale }: { locale: string }) {
   const progressPercent = Math.round(((step - 1) / (totalSteps - 1)) * 100)
 
   const stepLabels = locale === 'fr'
-    ? ['Identification', 'Projet', 'Description', 'Utilisateurs', 'Fonctionnalités', 'Contraintes', 'Récapitulatif']
-    : ['Identification', 'Project', 'Description', 'Users', 'Features', 'Constraints', 'Summary']
+    ? ['Votre besoin', 'Identification', 'Précision', 'Description', 'Utilisateurs', 'Prestations', 'Contraintes', 'Récapitulatif']
+    : ['Your need', 'Identification', 'Specification', 'Description', 'Users', 'Services', 'Constraints', 'Summary']
 
   return (
     <div>
-      {/* Progress bar */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm text-gray-500">
@@ -169,10 +157,8 @@ export default function DiscoveryFlow({ locale }: { locale: string }) {
             style={{ width: `${progressPercent}%` }}
           />
         </div>
-
-        {/* Step dots */}
         <div className="flex justify-between mt-3">
-          {stepLabels.map((label, i) => (
+          {stepLabels.map((_, i) => (
             <div
               key={i}
               className={`w-2 h-2 rounded-full transition-all ${
@@ -187,71 +173,30 @@ export default function DiscoveryFlow({ locale }: { locale: string }) {
         </div>
       </div>
 
-      {/* Step content */}
       <div className="bg-white/3 border border-white/8 rounded-2xl p-8">
         {step === 1 && (
-          <StepIdentification
-            data={formData}
-            onChange={updateData}
-            onNext={nextStep}
-            locale={locale}
-          />
+          <StepNeedType data={formData} onChange={updateData} onNext={nextStep} locale={locale} />
         )}
         {step === 2 && (
-          <StepProjectType
-            data={formData}
-            onChange={updateData}
-            onNext={nextStep}
-            onPrev={prevStep}
-            locale={locale}
-          />
+          <StepIdentification data={formData} onChange={updateData} onNext={nextStep} locale={locale} />
         )}
         {step === 3 && (
-          <StepDescription
-            data={formData}
-            onChange={updateData}
-            onNext={nextStep}
-            onPrev={prevStep}
-            locale={locale}
-          />
+          <StepProjectType data={formData} onChange={updateData} onNext={nextStep} onPrev={prevStep} locale={locale} />
         )}
         {step === 4 && (
-          <StepTargetUsers
-            data={formData}
-            onChange={updateData}
-            onNext={nextStep}
-            onPrev={prevStep}
-            locale={locale}
-          />
+          <StepDescription data={formData} onChange={updateData} onNext={nextStep} onPrev={prevStep} locale={locale} />
         )}
         {step === 5 && (
-          <StepFeatures
-            data={formData}
-            onChange={updateData}
-            onNext={nextStep}
-            onPrev={prevStep}
-            locale={locale}
-          />
+          <StepTargetUsers data={formData} onChange={updateData} onNext={nextStep} onPrev={prevStep} locale={locale} />
         )}
         {step === 6 && (
-          <StepConstraints
-            data={formData}
-            onChange={updateData}
-            onNext={nextStep}
-            onPrev={prevStep}
-            locale={locale}
-          />
+          <StepFeatures data={formData} onChange={updateData} onNext={nextStep} onPrev={prevStep} locale={locale} />
         )}
         {step === 7 && (
-          <StepReview
-            data={formData}
-            onChange={updateData}
-            onSubmit={handleSubmit}
-            onPrev={prevStep}
-            submitting={submitting}
-            error={error}
-            locale={locale}
-          />
+          <StepConstraints data={formData} onChange={updateData} onNext={nextStep} onPrev={prevStep} locale={locale} />
+        )}
+        {step === 8 && (
+          <StepReview data={formData} onChange={updateData} onSubmit={handleSubmit} onPrev={prevStep} submitting={submitting} error={error} locale={locale} />
         )}
       </div>
     </div>
