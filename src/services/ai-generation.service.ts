@@ -1,36 +1,36 @@
-import { prisma } from '@/lib/prisma'
+﻿import { prisma } from '@/lib/prisma'
 import { anthropic } from '@/lib/anthropic'
 import { compileBrief } from '@/lib/brief-compiler'
 import type { Language } from '@prisma/client'
 
-const SYSTEM_PROMPT_FR = `Tu es un architecte solution senior et expert en rédaction de cahiers des charges logiciels professionnels.
+const SYSTEM_PROMPT_FR = `Tu es un architecte solution senior et expert en rÃ©daction de cahiers des charges logiciels professionnels.
 
-Tu reçois un brief projet soumis par un prospect via le système de discovery de l'agence TOTSHI.
+Tu reÃ§ois un brief projet soumis par un prospect via le systÃ¨me de discovery de l'agence TOTSHI.
 
-Ta mission est de produire une ébauche structurée de cahier des charges basée sur les informations disponibles.
+Ta mission est de produire une Ã©bauche structurÃ©e de cahier des charges basÃ©e sur les informations disponibles.
 
-RÈGLES ABSOLUES :
-- Ne jamais inventer des fonctionnalités non mentionnées.
+RÃˆGLES ABSOLUES :
+- Ne jamais inventer des fonctionnalitÃ©s non mentionnÃ©es.
 - Identifier clairement les informations manquantes.
-- Distinguer les exigences confirmées des inférences logiques.
-- Rédiger en français.
-- Adopter un ton professionnel adapté à un document technique.
-- Ne jamais écrire de sections vides.
-- Pour les sections où l'information est insuffisante, noter "[Information à compléter avec le client]"
+- Distinguer les exigences confirmÃ©es des infÃ©rences logiques.
+- RÃ©diger en franÃ§ais.
+- Adopter un ton professionnel adaptÃ© Ã  un document technique.
+- Ne jamais Ã©crire de sections vides.
+- Pour les sections oÃ¹ l'information est insuffisante, noter "[Information Ã  complÃ©ter avec le client]"
 
-STRUCTURE DE L'ÉBAUCHE À PRODUIRE :
-1. Résumé du projet
-2. Problème identifié
+STRUCTURE DE L'Ã‰BAUCHE Ã€ PRODUIRE :
+1. RÃ©sumÃ© du projet
+2. ProblÃ¨me identifiÃ©
 3. Utilisateurs cibles
 4. Exigences fonctionnelles principales
-5. Exigences non-fonctionnelles déduites
-6. Fonctionnalités identifiées et leur justification
-7. Contraintes identifiées
-8. Questions critiques à poser au prospect
-9. Recommandations préliminaires
-10. Complexité estimée et observations
+5. Exigences non-fonctionnelles dÃ©duites
+6. FonctionnalitÃ©s identifiÃ©es et leur justification
+7. Contraintes identifiÃ©es
+8. Questions critiques Ã  poser au prospect
+9. Recommandations prÃ©liminaires
+10. ComplexitÃ© estimÃ©e et observations
 
-⚠️ ÉBAUCHE GÉNÉRÉE AUTOMATIQUEMENT — À AFFINER PAR L'ÉQUIPE TOTSHI`
+âš ï¸ Ã‰BAUCHE GÃ‰NÃ‰RÃ‰E AUTOMATIQUEMENT â€” Ã€ AFFINER PAR L'Ã‰QUIPE TOTSHI`
 
 const SYSTEM_PROMPT_EN = `You are a senior solution architect and expert in writing professional software specifications.
 
@@ -59,7 +59,7 @@ DRAFT STRUCTURE TO PRODUCE:
 9. Preliminary recommendations
 10. Estimated complexity and observations
 
-⚠️ AUTO-GENERATED DRAFT — TO BE REFINED BY TOTSHI TEAM`
+âš ï¸ AUTO-GENERATED DRAFT â€” TO BE REFINED BY TOTSHI TEAM`
 
 export async function triggerAIGeneration(
   submissionId: string,
@@ -84,7 +84,7 @@ export async function triggerAIGeneration(
       type: 'DRAFT_CDC',
       content: '',
       language,
-      generationStatus: 'PROCESSING',
+      generationStatus: 'GENERATING',
       version: nextVersion,
     },
   })
