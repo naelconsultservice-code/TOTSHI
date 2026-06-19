@@ -40,8 +40,7 @@ export async function POST(req: NextRequest) {
     // Passage du needType pour adapter le prompt IA
     triggerAIGeneration(
       submission.id,
-      prospect.language,
-      parsed.data.needType
+      prospect.language
     ).catch((err) => console.error('[AI Generation Error]', err))
 
     return NextResponse.json(
