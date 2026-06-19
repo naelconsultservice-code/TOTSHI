@@ -1,11 +1,11 @@
 import { prisma } from '@/lib/prisma'
 import { computeCompletenessScore } from '@/lib/score'
 import type { SubmissionInput } from '@/validations/submission.schema'
-import type { Language, ProjectType, SubmissionStatus } from '@prisma/client'
+import type { Language, ProjectType, NeedType, SubmissionStatus } from '@prisma/client'
 
 export async function createSubmission(
   data: SubmissionInput,
-  ipAddress: string
+  ipAddress?: string
 ) {
   const recentSubmission = await prisma.submission.findFirst({
     where: {
@@ -45,8 +45,8 @@ export async function createSubmission(
       profile: data.targetUsers.profile,
       estimatedVolume: data.targetUsers.estimatedVolume ?? '',
       geography: data.targetUsers.geography ?? '',
-      techLevel: data.targetUsers.techLevel,
-      accessType: data.targetUsers.accessType,
+      techLevel: data.targetUsers.techLevel ?? '',
+      accessType: data.targetUsers.accessType ?? '',
     },
     features: data.features ?? { selected: [], freeText: '' },
     constraints: data.constraints ?? {
@@ -62,22 +62,25 @@ export async function createSubmission(
   const submission = await prisma.submission.create({
     data: {
       prospectId: prospect.id,
+      needType: data.needType as NeedType,
       projectType: data.projectType as ProjectType,
       description: data.description,
       targetUsers: data.targetUsers,
       features: data.features ?? { selected: [], freeText: '' },
       constraints: data.constraints ?? {},
-      rawResponses: data as object,
-      honeypotFlagged: isHoneypot,
-      ipAddress,
+      language: data.language as Language,
+      gdprConsent: data.gdprConsent,
+      gdprConsentAt: new Date(),
       completenessScore,
+      honeypot: isHoneypot ? data._hp : null,
     },
   })
 
   await prisma.statusHistory.create({
     data: {
       submissionId: submission.id,
-      newStatus: 'NOUVEAU',
+      fromStatus: null,
+      toStatus: 'NOUVEAU',
       changedBy: 'system',
     },
   })
@@ -107,8 +110,8 @@ export async function updateSubmissionStatus(
     prisma.statusHistory.create({
       data: {
         submissionId,
-        oldStatus: current.status,
-        newStatus,
+        fromStatus: current.status,
+        toStatus: newStatus,
         changedBy: 'admin',
       },
     }),
@@ -119,10 +122,11 @@ export async function updateSubmissionStatus(
 
 export async function addInternalNote(
   submissionId: string,
-  content: string
+  content: string,
+  author: string = 'admin'
 ) {
   return prisma.internalNote.create({
-    data: { submissionId, content },
+    data: { submissionId, content, author },
   })
 }
 
