@@ -39,6 +39,15 @@ export async function createSubmission(
 
   const isHoneypot = !!data._hp
 
+  const normalizedConstraints = {
+    budget: data.constraints?.budget ?? '',
+    timeline: data.constraints?.timeline ?? '',
+    currentSystem: data.constraints?.currentSystem ?? '',
+    technicalConstraints: data.constraints?.technicalConstraints ?? '',
+    references: data.constraints?.references ?? '',
+    urgencyLevel: data.constraints?.urgencyLevel ?? 'normal',
+  }
+
   const completenessScore = computeCompletenessScore({
     description: data.description,
     targetUsers: {
@@ -49,14 +58,7 @@ export async function createSubmission(
       accessType: data.targetUsers.accessType ?? '',
     },
     features: data.features ?? { selected: [], freeText: '' },
-    constraints: data.constraints ?? {
-      budget: '',
-      timeline: '',
-      currentSystem: '',
-      technicalConstraints: '',
-      references: '',
-      urgencyLevel: 'normal',
-    },
+    constraints: normalizedConstraints,
   })
 
   const submission = await prisma.submission.create({
@@ -67,7 +69,7 @@ export async function createSubmission(
       description: data.description,
       targetUsers: data.targetUsers,
       features: data.features ?? { selected: [], freeText: '' },
-      constraints: data.constraints ?? {},
+      constraints: normalizedConstraints,
       language: data.language as Language,
       gdprConsent: data.gdprConsent,
       gdprConsentAt: new Date(),
