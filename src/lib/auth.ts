@@ -40,14 +40,14 @@ export const authOptions: NextAuthOptions = {
         )
 
         if (!isValid) {
-          const failedLogins = admin.failedLogins + 1
+          const failedAttempts = admin.failedAttempts + 1
           const lockedUntil =
-            failedLogins >= 5
+            failedAttempts >= 5
               ? new Date(Date.now() + 15 * 60 * 1000)
               : null
           await prisma.adminUser.update({
             where: { id: admin.id },
-            data: { failedLogins, lockedUntil },
+            data: { failedAttempts, lockedUntil },
           })
           return null
         }
@@ -55,8 +55,9 @@ export const authOptions: NextAuthOptions = {
         await prisma.adminUser.update({
           where: { id: admin.id },
           data: {
-            failedLogins: 0,
+            failedAttempts: 0,
             lockedUntil: null,
+            lastLoginAt: new Date(),
           },
         })
 

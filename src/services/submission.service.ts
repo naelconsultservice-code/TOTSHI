@@ -70,11 +70,13 @@ export async function createSubmission(
       targetUsers: data.targetUsers,
       features: data.features ?? { selected: [], freeText: '' },
       constraints: normalizedConstraints,
+      rawResponses: data as object,
       language: data.language as Language,
       gdprConsent: data.gdprConsent,
       gdprConsentAt: new Date(),
       completenessScore,
-      honeypot: isHoneypot ? data._hp : null,
+      honeypotFlagged: isHoneypot,
+      ipAddress: ipAddress ?? null,
     },
   })
 
@@ -122,13 +124,9 @@ export async function updateSubmissionStatus(
   return updated
 }
 
-export async function addInternalNote(
-  submissionId: string,
-  content: string,
-  author: string = 'admin'
-) {
+export async function addInternalNote(submissionId: string, content: string) {
   return prisma.internalNote.create({
-    data: { submissionId, content, author },
+    data: { submissionId, content },
   })
 }
 

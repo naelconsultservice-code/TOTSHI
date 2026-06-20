@@ -8,10 +8,6 @@ datasource db {
   directUrl = env("DATABASE_URL")
 }
 
-// ─────────────────────────────────────────────────────────
-// ENUMS
-// ─────────────────────────────────────────────────────────
-
 enum Language {
   fr
   en
@@ -25,7 +21,6 @@ enum NeedType {
 }
 
 enum ProjectType {
-  // Développement
   SITE_WEB
   APP_WEB
   APP_MOBILE
@@ -35,7 +30,6 @@ enum ProjectType {
   ERP_CRM
   FINTECH
   IA_AUTOMATISATION
-  // Marketing
   STRATEGIE_DIGITALE
   SEO_REFERENCEMENT
   PUBLICITE_EN_LIGNE
@@ -44,14 +38,12 @@ enum ProjectType {
   EMAIL_MARKETING
   BRANDING_IDENTITE
   MARKETING_COMPLET
-  // Consultance
   AUDIT_DIGITAL
   STRATEGIE_TRANSFORMATION
   CHOIX_TECHNOLOGIQUES
   ACCOMPAGNEMENT_PROJET
   FORMATION_EQUIPES
   CONSEIL_CROISSANCE
-  // Indéterminé
   PRESENCE_EN_LIGNE
   AUTOMATISER_PROCESSUS
   DEVELOPPER_ACTIVITE
@@ -83,46 +75,44 @@ enum GenerationStatus {
   FAILED
 }
 
-// ─────────────────────────────────────────────────────────
-// MODELS
-// ─────────────────────────────────────────────────────────
-
 model Prospect {
-  id          String       @id @default(cuid())
+  id          String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt   DateTime     @default(now()) @map("created_at")
+  firstName   String       @map("first_name")
+  lastName    String       @map("last_name")
   email       String       @unique
-  firstName   String
-  lastName    String
   phone       String?
   company     String?
   country     String
   sector      String
   language    Language     @default(fr)
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
   submissions Submission[]
 
   @@map("prospects")
 }
 
 model Submission {
-  id                String           @id @default(cuid())
+  id                String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt         DateTime         @default(now()) @map("created_at")
+  updatedAt         DateTime         @updatedAt @map("updated_at")
+
+  prospectId        String           @map("prospect_id") @db.Uuid
+  prospect          Prospect         @relation(fields: [prospectId], references: [id])
+
   needType          NeedType         @default(DEVELOPPEMENT)
-  projectType       ProjectType
+  projectType       ProjectType      @map("project_type")
   description       String
-  targetUsers       Json
+  targetUsers       Json             @map("target_users")
   features          Json
   constraints       Json
-  completenessScore Int?
+  rawResponses      Json             @default("{}") @map("raw_responses")
   status            SubmissionStatus @default(NOUVEAU)
+  completenessScore Int?             @map("completeness_score")
+  honeypotFlagged   Boolean          @default(false) @map("honeypot_flagged")
+  ipAddress         String?          @map("ip_address")
   language          Language         @default(fr)
-  honeypot          String?
-  gdprConsent       Boolean          @default(false)
-  gdprConsentAt     DateTime?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-
-  prospect          Prospect         @relation(fields: [prospectId], references: [id])
-  prospectId        String
+  gdprConsent       Boolean          @default(true) @map("gdpr_consent")
+  gdprConsentAt     DateTime?        @default(now()) @map("gdpr_consent_at")
 
   documents         GeneratedDocument[]
   statusHistory     StatusHistory[]
@@ -132,79 +122,80 @@ model Submission {
 }
 
 model GeneratedDocument {
-  id               String           @id @default(cuid())
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt        DateTime         @default(now()) @map("created_at")
+
+  submissionId     String           @map("submission_id") @db.Uuid
+  submission       Submission       @relation(fields: [submissionId], references: [id])
+
   type             DocumentType
   content          String
   language         Language
-  generationStatus GenerationStatus @default(PENDING)
-  errorMessage     String?
+  generationStatus GenerationStatus @default(PENDING) @map("generation_status")
+  errorMessage     String?          @map("error_message")
   version          Int              @default(1)
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
-
-  submission       Submission       @relation(fields: [submissionId], references: [id])
-  submissionId     String
 
   @@map("generated_documents")
 }
 
 model StatusHistory {
-  id           String           @id @default(cuid())
-  fromStatus   SubmissionStatus?
-  toStatus     SubmissionStatus
-  changedBy    String
-  note         String?
-  createdAt    DateTime         @default(now())
+  id           String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt    DateTime          @default(now()) @map("created_at")
 
-  submission   Submission       @relation(fields: [submissionId], references: [id])
-  submissionId String
+  submissionId String            @map("submission_id") @db.Uuid
+  submission   Submission        @relation(fields: [submissionId], references: [id])
+
+  fromStatus   SubmissionStatus? @map("old_status")
+  toStatus     SubmissionStatus  @map("new_status")
+  changedBy    String            @map("changed_by")
 
   @@map("status_history")
 }
 
 model InternalNote {
-  id           String     @id @default(cuid())
-  content      String
-  author       String
-  createdAt    DateTime   @default(now())
+  id           String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt    DateTime   @default(now()) @map("created_at")
 
+  submissionId String     @map("submission_id") @db.Uuid
   submission   Submission @relation(fields: [submissionId], references: [id])
-  submissionId String
+
+  content      String
 
   @@map("internal_notes")
 }
 
 model Project {
-  id             String   @id @default(cuid())
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
   slug           String   @unique
-  titleFr        String
-  titleEn        String
-  descriptionFr  String
-  descriptionEn  String
-  problemFr      String
-  problemEn      String
-  resultFr       String
-  resultEn       String
+  titleFr        String   @map("title_fr")
+  titleEn        String   @map("title_en")
   category       String
+  descriptionFr  String   @map("description_fr")
+  descriptionEn  String   @map("description_en")
+  problemFr      String   @map("problem_fr")
+  problemEn      String   @map("problem_en")
+  resultFr       String   @map("result_fr")
+  resultEn       String   @map("result_en")
   technologies   String[]
-  coverImageUrl  String?
-  isPublished    Boolean  @default(false)
-  displayOrder   Int      @default(0)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  coverImageUrl  String?  @map("cover_image_url")
+  isPublished    Boolean  @default(false) @map("is_published")
+  displayOrder   Int      @default(0) @map("display_order")
 
   @@map("projects")
 }
 
 model AdminUser {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  passwordHash String
-  name         String?
-  failedLogins Int      @default(0)
-  lockedUntil  DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt      DateTime  @default(now()) @map("created_at")
+
+  email          String    @unique
+  passwordHash   String    @map("password_hash")
+  failedAttempts Int       @default(0) @map("failed_attempts")
+  lockedUntil    DateTime? @map("locked_until")
+  lastLoginAt    DateTime? @map("last_login_at")
 
   @@map("admin_users")
 }
