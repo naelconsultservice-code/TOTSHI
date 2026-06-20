@@ -182,7 +182,7 @@ export default function StepTargetUsers({ data, onChange, onNext, onPrev, locale
                            text-white focus:outline-none focus:border-[#0066FF]/50"
               >
                 <option value="" className="bg-[#0A0A0F]">{fr ? 'Sélectionner...' : 'Select...'}</option>
-                {fr
+                {(fr
                   ? ['Pas encore de communauté', '< 1 000 abonnés', '1 000 - 10 000', '10 000 - 50 000', '> 50 000']
                   : ['No community yet', '< 1,000 followers', '1,000 - 10,000', '10,000 - 50,000', '> 50,000']
                 ).map((v) => (
@@ -282,7 +282,7 @@ export default function StepTargetUsers({ data, onChange, onNext, onPrev, locale
                            text-white focus:outline-none focus:border-[#0066FF]/50"
               >
                 <option value="" className="bg-[#0A0A0F]">{fr ? 'Sélectionner...' : 'Select...'}</option>
-                {fr
+                {(fr
                   ? ['Indépendant / Solo', '2 - 10 employés', '11 - 50 employés', '51 - 200 employés', '> 200 employés']
                   : ['Solo / Freelance', '2 - 10 employees', '11 - 50 employees', '51 - 200 employees', '> 200 employees']
                 ).map((v) => (
