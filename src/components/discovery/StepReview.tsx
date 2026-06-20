@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import type { FormData } from './DiscoveryFlow'
 
 type Props = {
@@ -160,7 +161,17 @@ export default function StepReview({ data, onChange, onSubmit, onPrev, submittin
           {error}
         </div>
       )}
-
+        
+      {/* Alternative RDV */}
+      <div className="text-center mb-4">
+        <Link
+          href={`/${locale}/contact`}
+          className="text-sm text-gray-500 hover:text-gray-300 transition-colors underline underline-offset-2"
+        >
+          {fr ? 'Vous préférez en discuter directement ? Réservez un appel →' : 'Prefer to discuss directly? Book a call →'}
+        </Link>
+      </div>
+      
       <button
         onClick={onSubmit}
         disabled={!data.gdprConsent || submitting}

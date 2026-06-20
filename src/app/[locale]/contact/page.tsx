@@ -1,12 +1,17 @@
-import Link from 'next/link'
+'use client'
 
-export default async function ContactPage({
+import { use, useState } from 'react'
+import Link from 'next/link'
+import CalendlyEmbed from '@/components/booking/CalendlyEmbed'
+
+export default function ContactPage({
   params,
 }: {
   params: Promise<{ locale: string }>
 }) {
-  const { locale } = await params
+  const { locale } = use(params)
   const isFr = locale === 'fr'
+  const [showCalendly, setShowCalendly] = useState(false)
 
   return (
     <div className="pt-32 pb-20 px-6 min-h-screen">
@@ -24,11 +29,11 @@ export default async function ContactPage({
 
         <p className="text-[#8892A4] text-lg leading-relaxed mb-12 max-w-lg mx-auto">
           {isFr
-            ? "Pour un projet de développement, marketing ou consultance, utilisez notre formulaire guidé — il nous permet de mieux comprendre votre besoin. Pour toute autre question (partenariat, presse, recrutement), écrivez-nous directement."
-            : "For a development, marketing or consulting project, use our guided form — it helps us understand your needs better. For any other inquiry (partnership, press, recruitment), reach out directly."}
+            ? "Pas encore sûr de votre besoin ? Réservez un appel de 30 minutes pour en discuter directement. Pour un projet déjà défini, notre formulaire guidé reste le moyen le plus efficace."
+            : "Not sure about your need yet? Book a 30-minute call to discuss it directly. For an already defined project, our guided form remains the most efficient way."}
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <Link
             href={`/${locale}/demarrer-mon-projet`}
             className="inline-flex items-center gap-2 bg-[#0066FF] hover:bg-[#0052CC]
@@ -37,22 +42,36 @@ export default async function ContactPage({
           >
             {isFr ? "J'ai un projet →" : 'I have a project →'}
           </Link>
-
-          <a
-            href="mailto:itumbafelly@gmail.com"
+          <button
+            onClick={() => setShowCalendly(!showCalendly)}
             className="inline-flex items-center gap-2 border border-white/15
                        hover:border-white/30 bg-white/[0.02] hover:bg-white/[0.05]
                        text-[#8892A4] hover:text-white font-semibold px-7 py-3.5
                        rounded-xl text-sm transition-all hover:-translate-y-0.5 w-full sm:w-auto justify-center"
           >
-            ✉️ itumbafelly@gmail.com
+            📅 {isFr ? 'Réserver un appel' : 'Book a call'}
+          </button>
+        </div>
+
+        {showCalendly && (
+          <div className="mb-12 animate-fade-up">
+            <CalendlyEmbed locale={locale} />
+          </div>
+        )}
+
+        <div className="border-t border-white/5 pt-10">
+          <p className="text-[#8892A4] text-sm mb-3">
+            {isFr ? 'Ou écrivez-nous directement' : 'Or write to us directly'}
+          </p>
+          <a
+            href="mailto:itumbafelly@gmail.com"
+            className="text-[#0066FF] hover:text-white font-medium text-sm transition-colors"
+          >
+            itumbafelly@gmail.com
           </a>
         </div>
 
-
-
-
-        <p className="text-[#4A5568] text-xs">
+        <p className="text-center text-[#374151] text-xs mt-10">
           {isFr ? 'Réponse généralement sous 24 à 48h.' : 'Reply usually within 24 to 48h.'}
         </p>
       </div>
