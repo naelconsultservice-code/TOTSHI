@@ -24,8 +24,11 @@ export default function Navbar({ locale }: { locale: string }) {
     { href: `/${locale}`, label: t.nav.home },
     { href: `/${locale}/services`, label: t.nav.services },
     { href: `/${locale}/realisations`, label: t.nav.portfolio },
+    { href: `/${locale}/blog`, label: locale === 'fr' ? 'Blog' : 'Blog' },
     { href: `/${locale}/a-propos`, label: t.nav.about },
   ]
+
+
 
   return (
     <nav

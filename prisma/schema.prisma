@@ -199,3 +199,24 @@ model AdminUser {
 
   @@map("admin_users")
 }
+model Article {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  slug           String    @unique
+  titleFr        String    @map("title_fr")
+  titleEn        String    @map("title_en")
+  excerptFr      String    @map("excerpt_fr")
+  excerptEn      String    @map("excerpt_en")
+  contentFr      String    @map("content_fr")
+  contentEn      String    @map("content_en")
+  category       String
+  coverImageUrl  String?   @map("cover_image_url")
+  author         String    @default("TOTSHI")
+  readingMinutes  Int      @default(5) @map("reading_minutes")
+  isPublished    Boolean   @default(false) @map("is_published")
+  publishedAt    DateTime? @map("published_at")
+
+  @@map("articles")
+}

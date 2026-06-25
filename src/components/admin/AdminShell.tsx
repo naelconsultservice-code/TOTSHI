@@ -16,11 +16,12 @@ export default function AdminShell({
           <p className="text-xs text-gray-600 mt-1">Dashboard Admin</p>
         </div>
 
-        <nav className="flex-1 p-4 flex flex-col gap-1">
+<nav className="flex-1 p-4 flex flex-col gap-1">
           {[
             { href: '/admin/dashboard', icon: '📊', label: "Vue d'ensemble" },
             { href: '/admin/soumissions', icon: '📋', label: 'Soumissions' },
             { href: '/admin/realisations', icon: '🎨', label: 'Réalisations' },
+            { href: '/admin/articles', icon: '📝', label: 'Articles' },
           ].map((item) => (
             <Link
               key={item.href}
