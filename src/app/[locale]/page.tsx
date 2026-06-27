@@ -1,3 +1,4 @@
+import TestimonialsSection from '@/components/testimonials/TestimonialsSection'
 import Link from 'next/link'
 import fr from '@/i18n/fr.json'
 import en from '@/i18n/en.json'
@@ -223,6 +224,11 @@ export default async function HomePage({
           </div>
         </div>
       </section>
+
+{/* ═══════════════════════════════════════ TÉMOIGNAGES */}
+      <TestimonialsSection locale={locale} />
+
+      {/* ═══════════════════════════════════════ CTA FINAL */}
 
       {/* ═══════════════════════════════════════ CTA FINAL */}
       <section className="py-32 px-6 lg:px-8">

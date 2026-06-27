@@ -17,12 +17,14 @@ export default function AdminShell({
         </div>
 
 <nav className="flex-1 p-4 flex flex-col gap-1">
-          {[
-            { href: '/admin/dashboard', icon: '📊', label: "Vue d'ensemble" },
-            { href: '/admin/soumissions', icon: '📋', label: 'Soumissions' },
-            { href: '/admin/realisations', icon: '🎨', label: 'Réalisations' },
-            { href: '/admin/articles', icon: '📝', label: 'Articles' },
-          ].map((item) => (
+          // Remplace le tableau des liens nav existant par celui-ci :
+{[
+  { href: '/admin/dashboard', icon: '📊', label: "Vue d'ensemble" },
+  { href: '/admin/soumissions', icon: '📋', label: 'Soumissions' },
+  { href: '/admin/realisations', icon: '🎨', label: 'Réalisations' },
+  { href: '/admin/articles', icon: '📝', label: 'Articles' },
+  { href: '/admin/testimonials', icon: '💬', label: 'Témoignages' },  // ← AJOUTER
+].map((item) => (
             <Link
               key={item.href}
               href={item.href}

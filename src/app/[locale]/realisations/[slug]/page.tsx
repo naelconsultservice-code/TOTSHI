@@ -1,3 +1,4 @@
+import ProjectTestimonials from '@/components/testimonials/ProjectTestimonials'
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -121,6 +122,16 @@ export default async function ProjectDetailPage({
             </Link>
           </div>
         </div>
+
+      {/* Témoignages liés au projet */}
+        <ProjectTestimonials projectSlug={slug} locale={locale} />
+
+        <Link
+          href={`/${locale}/realisations`}
+          className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
+        >
+          ← {isFr ? 'Retour aux réalisations' : 'Back to portfolio'}
+        </Link>
 
         <Link
           href={`/${locale}/realisations`}

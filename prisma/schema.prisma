@@ -220,3 +220,21 @@ model Article {
 
   @@map("articles")
 }
+
+model Testimonial {
+  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  clientName      String   @map("client_name") @db.VarChar
+  clientRole      String?  @map("client_role") @db.VarChar
+  clientCompany   String?  @map("client_company") @db.VarChar
+  clientAvatarUrl String?  @map("client_avatar_url") @db.VarChar
+  contentFr       String   @map("content_fr")
+  contentEn       String   @map("content_en")
+  rating          Int      @default(5)
+  projectSlug     String?  @map("project_slug") @db.VarChar
+  isPublished     Boolean  @default(false) @map("is_published")
+  displayOrder    Int      @default(0) @map("display_order")
+
+  @@map("testimonials")
+}
