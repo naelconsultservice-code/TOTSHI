@@ -17,7 +17,6 @@ export default function AdminShell({
         </div>
 
 <nav className="flex-1 p-4 flex flex-col gap-1">
-          // Remplace le tableau des liens nav existant par celui-ci :
 {[
   { href: '/admin/dashboard', icon: '📊', label: "Vue d'ensemble" },
   { href: '/admin/soumissions', icon: '📋', label: 'Soumissions' },

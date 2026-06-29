@@ -3,6 +3,7 @@ import { SubmissionSchema } from '@/validations/submission.schema'
 import { createSubmission } from '@/services/submission.service'
 import { sendProspectConfirmation } from '@/services/notification.service'
 import { triggerAIGeneration } from '@/services/ai-generation.service'
+import { submissionRateLimit } from '@/lib/rate-limit'
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,6 +11,23 @@ export async function POST(req: NextRequest) {
       req.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
       req.headers.get('x-real-ip') ??
       'unknown'
+
+    // ── Rate limiting : 3 soumissions max par heure par IP ──
+    const { success, limit, reset, remaining } = await submissionRateLimit.limit(ip)
+
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Trop de soumissions. Réessayez dans 1 heure.' },
+        {
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': limit.toString(),
+            'X-RateLimit-Remaining': remaining.toString(),
+            'X-RateLimit-Reset': reset.toString(),
+          },
+        }
+      )
+    }
 
     const body = await req.json()
     const parsed = SubmissionSchema.safeParse(body)
@@ -37,7 +55,6 @@ export async function POST(req: NextRequest) {
       submissionId: submission.id,
     }).catch((err) => console.error('[Confirmation Email Error]', err))
 
-    // Passage du needType pour adapter le prompt IA
     triggerAIGeneration(
       submission.id,
       prospect.language
