@@ -3,6 +3,8 @@ import Link from 'next/link'
 import fr from '@/i18n/fr.json'
 import en from '@/i18n/en.json'
 
+export const dynamic = 'force-dynamic'
+
 const services = [
   { icon: '🌐', key: 'web' },
   { icon: '📱', key: 'mobile' },
