@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Bloquer les routes admin
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://totshi.vercel.app/sitemap.xml
